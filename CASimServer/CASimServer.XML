@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CASimServer</name>
+    </assembly>
+    <members>
+        <member name="T:CASimServer.CAServer">
+            <summary>
+            A console application used to host a Simulation. TCP is used, with a
+            separate MEX endpoint to send metadata. Information is encoded in binary
+            instead of XML. If this host must be used with a non-WCF client, an
+            http binding with XML encoding should be used instead.
+            </summary>
+        </member>
+    </members>
+</doc>

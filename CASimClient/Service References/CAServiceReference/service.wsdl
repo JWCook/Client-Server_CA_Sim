@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Simulation" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_ICAService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
+        </msb:BinaryEncoding>
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+                </msf:WindowsTransportSecurity>
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256>
+                </sp:Basic256>
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict>
+                </sp:Strict>
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <wsam:Addressing>
+          <wsp:Policy>
+            <wsam:AnonymousResponses>
+            </wsam:AnonymousResponses>
+          </wsp:Policy>
+        </wsam:Addressing>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/CASimService" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/System.Reflection" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ICAService_getCellState_InputMessage">
+    <wsdl:part name="parameters" element="tns:getCellState" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getCellState_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getCellStateResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getNumNeighbors_InputMessage">
+    <wsdl:part name="parameters" element="tns:getNumNeighbors" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getNumNeighbors_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getNumNeighborsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getUpdated_InputMessage">
+    <wsdl:part name="parameters" element="tns:getUpdated" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getUpdated_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getUpdatedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_initCA_InputMessage">
+    <wsdl:part name="parameters" element="tns:initCA" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_initCA_OutputMessage">
+    <wsdl:part name="parameters" element="tns:initCAResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_initGridBlank_InputMessage">
+    <wsdl:part name="parameters" element="tns:initGridBlank" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_initGridBlank_OutputMessage">
+    <wsdl:part name="parameters" element="tns:initGridBlankResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_initGrid_InputMessage">
+    <wsdl:part name="parameters" element="tns:initGrid" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_initGrid_OutputMessage">
+    <wsdl:part name="parameters" element="tns:initGridResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_run_InputMessage">
+    <wsdl:part name="parameters" element="tns:run" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_run_OutputMessage">
+    <wsdl:part name="parameters" element="tns:runResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_setCellState_InputMessage">
+    <wsdl:part name="parameters" element="tns:setCellState" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_setCellState_OutputMessage">
+    <wsdl:part name="parameters" element="tns:setCellStateResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_step_InputMessage">
+    <wsdl:part name="parameters" element="tns:step" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_step_OutputMessage">
+    <wsdl:part name="parameters" element="tns:stepResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_stop_InputMessage">
+    <wsdl:part name="parameters" element="tns:stop" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_stop_OutputMessage">
+    <wsdl:part name="parameters" element="tns:stopResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_updateGrid_InputMessage">
+    <wsdl:part name="parameters" element="tns:updateGrid" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_updateGrid_OutputMessage">
+    <wsdl:part name="parameters" element="tns:updateGridResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getNumStates_InputMessage">
+    <wsdl:part name="parameters" element="tns:getNumStates" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getNumStates_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getNumStatesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getGrid_InputMessage">
+    <wsdl:part name="parameters" element="tns:getGrid" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getGrid_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getGridResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getGeneration_InputMessage">
+    <wsdl:part name="parameters" element="tns:getGeneration" />
+  </wsdl:message>
+  <wsdl:message name="ICAService_getGeneration_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getGenerationResponse" />
+  </wsdl:message>
+  <wsdl:portType msc:usingSession="true" name="ICAService">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getCellState">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/getCellState" message="tns:ICAService_getCellState_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/getCellStateResponse" message="tns:ICAService_getCellState_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getNumNeighbors">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/getNumNeighbors" message="tns:ICAService_getNumNeighbors_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/getNumNeighborsResponse" message="tns:ICAService_getNumNeighbors_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getUpdated">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/getUpdated" message="tns:ICAService_getUpdated_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/getUpdatedResponse" message="tns:ICAService_getUpdated_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="initCA">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/initCA" message="tns:ICAService_initCA_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/initCAResponse" message="tns:ICAService_initCA_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="initGridBlank">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/initGridBlank" message="tns:ICAService_initGridBlank_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/initGridBlankResponse" message="tns:ICAService_initGridBlank_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="initGrid">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/initGrid" message="tns:ICAService_initGrid_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/initGridResponse" message="tns:ICAService_initGrid_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="run">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/run" message="tns:ICAService_run_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/runResponse" message="tns:ICAService_run_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="setCellState">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/setCellState" message="tns:ICAService_setCellState_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/setCellStateResponse" message="tns:ICAService_setCellState_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="step">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/step" message="tns:ICAService_step_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/stepResponse" message="tns:ICAService_step_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="stop">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/stop" message="tns:ICAService_stop_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/stopResponse" message="tns:ICAService_stop_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="updateGrid">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/updateGrid" message="tns:ICAService_updateGrid_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/updateGridResponse" message="tns:ICAService_updateGrid_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getNumStates">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/getNumStates" message="tns:ICAService_getNumStates_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/getNumStatesResponse" message="tns:ICAService_getNumStates_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getGrid">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/getGrid" message="tns:ICAService_getGrid_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/getGridResponse" message="tns:ICAService_getGrid_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="getGeneration">
+      <wsdl:input wsam:Action="http://tempuri.org/ICAService/getGeneration" message="tns:ICAService_getGeneration_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/ICAService/getGenerationResponse" message="tns:ICAService_getGeneration_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_ICAService" type="tns:ICAService">
+    <wsp:PolicyReference URI="#NetTcpBinding_ICAService_policy">
+    </wsp:PolicyReference>
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="getCellState">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/getCellState" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getNumNeighbors">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/getNumNeighbors" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getUpdated">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/getUpdated" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="initCA">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/initCA" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="initGridBlank">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/initGridBlank" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="initGrid">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/initGrid" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="run">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/run" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setCellState">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/setCellState" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="step">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/step" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="stop">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/stop" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateGrid">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/updateGrid" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getNumStates">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/getNumStates" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getGrid">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/getGrid" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getGeneration">
+      <soap12:operation soapAction="http://tempuri.org/ICAService/getGeneration" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Simulation">
+    <wsdl:port name="NetTcpBinding_ICAService" binding="tns:NetTcpBinding_ICAService">
+      <soap12:address location="net.tcp://localhost:3333/CAService" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:3333/CAService</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Upn>HMSTR-546E2F\Apocalyptic Hamster</Upn>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

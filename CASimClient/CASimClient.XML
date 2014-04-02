@@ -1,0 +1,513 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CASimClient</name>
+    </assembly>
+    <members>
+        <member name="T:CASimClient.CAClientWindow">
+            <summary>
+            Main window interaction logic and main client application responsible
+            for handling communiation with the server. When a simulation is started,
+            the server will run continuously until stopped and add updates to a 
+            queue on the server, divided into "frames" of the simulation. While the
+            simulation is running, the work is split up into the following threads:
+            
+            -retrieveUpdatesThread retrieves any available updates from the server
+             and adds them to the toUpdate queue. Upon starting it signals the
+             server to begin simulation, and upon ending it signals the server to
+             end simulation, and pulls any remaining updates from the server.
+            
+            -updateGridThread pulls updates from the toUpdate queue and updates
+            the bitmap used by the client to display the grid. Refreshing the UI
+            takes a (proportionally) significant amount of time, and is not handled
+            by this thread unless frame skipping is disabled (e.g., if the user
+            wants every single frame to be displayed sequentially). Disabling frame
+            skipping will generally decrease performance.
+            
+            -updateUiThread refreshes the UI according to a user-adjustable refresh
+            rate, if frame skipping is enabled. By default this rate is ~30 frames
+            per second, or one refresh every 33 milliseconds. If the simulation runs
+            faster than this rate, some frames will be skipped.
+            </summary>
+            <summary>
+            CAClientWindow
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.clickCell(System.Object,System.Windows.Input.MouseButtonEventArgs)">
+            <summary>
+            When a cell is left-clicked, increment its state, updating both the 
+            simulation and the display. For a right-click, reset the cell to
+            the default state.
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.clear(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Clear the contents of the grid
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.editFrameRate(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Display a dialog to adjust the refresh rate of the UI updater,
+            or to enable/disable frame skipping
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.exit(System.Object,System.EventArgs)">
+            <summary>
+            Exit the program
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.loadCA(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Open a window to load CA parapeters and, if successful, use it in
+            the current simulation
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.loadColors(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Open a dialog to load a color scheme from a file
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.loadGrid(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Open a dialog to load a saved grid from a file
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.reGenerateColors(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Re-generate a set of colors big enough for the current CA
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.resize(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Open a dialog to resize the grid. Any modifications to the grid will
+            be preserved, within the bounds of the new grid size.
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.runStop(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Either start or start the simulation, depending on whether it is
+            already running or not, and update controls appropriately
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.saveCA(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Save the current CA to a file
+            (menu option will not be activated until a CA is successfully compiled)
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.saveColors(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Save the current color configuration to a file
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.saveGrid(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Save the current grid to a file
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.step(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Step through one iteration of the simulation
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.updateCoords(System.Object,System.Windows.Input.MouseEventArgs)">
+            <summary>
+            Update the coordinates in the statusbar upon mouseover of a cell
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.zoomLarger(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Zoom out
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.zoomSmaller(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Zoom in
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.disableMenuItems">
+            <summary>
+            Disable menu items while simulation is running
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.enableMenuItems">
+            <summary>
+            Re-enable menu items when simulation is done running
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.getCellClicked(System.Windows.Input.MouseEventArgs)">
+            <summary>
+            Calculate the cell corresponding to the location clicked
+            </summary>
+            <param name="e">The mouse button event containing the location clicked</param>
+            <returns>A Point representing the cell clicked</returns>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.getDefaultColors(System.Int32)">
+            <summary>
+            Generate a list of colors to use. The colors are chosen to be
+            evenly spaced in the color spectrum.
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.getRGB(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Given 3 separate color values, return a single RGB value
+            </summary>
+            <param name="r">Red value (0-255)</param>
+            <param name="g">Green value (0-255)</param>
+            <param name="b">Blue value (0-255)</param>
+            <returns>An RGB value with the specified color values</returns>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.initDisplay(System.Int32,System.Int32)">
+            <summary>
+            Initialize the grid display to a new bitmap of the specified size
+            </summary>
+            <param name="x">The width of the new grid</param>
+            <param name="y">The height of the new grid</param>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.saveFile(System.String)">
+            <summary>
+            Save the specified information to a file
+            </summary>
+            <param name="type">The type of information to save; can be either
+            Cellular Automata, Color Scheme, or Grid</param>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.setGrid(System.UInt32[][])">
+            <summary>
+            Use the specified grid instead of the current one
+            </summary>
+            <param name="grid">The new grid to use</param>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.updateUI">
+            <summary>
+            Update the UI, refreshing the grid display and updating the
+            generation shown in the status bar
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.disableFrameSkipping">
+            <summary>
+            Disable frame skipping; this makes updateGridThread now responsible
+            for updating the UI while a simulation is running. This will update
+            the UI whenever the grid is updated.
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.enableFrameSkipping">
+            <summary>
+            Enable frame skipping; this makes updateUiThread now responsible
+            for updating the UI while a simulation is running. This will update
+            the UI every [refreshRate] milliseconds.
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.simulationStepRunner">
+            <summary>
+            Used by stepSimulationThread to step through one iteration of the
+            simulation
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.updateRetriever">
+            <summary>
+            Used by runSimulationThread to run the simulation on the server
+            until stopped, and retrieve any available updates from the server
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.gridUpdater">
+            <summary>
+            Loop used by drawingThread to continuously update the grid
+            whenever new frames are retrieved from the server. If frame
+            skipping is disabled, the display is updated here as well;
+            otherwise it is handled by updateUiThread.
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.UIUpdater">
+            <summary>
+            Loop used by updateUiThread to update the UI every
+            [refreshRate] milliseconds
+            </summary>
+        </member>
+        <member name="M:CASimClient.CAClientWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:CASimClient.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:CASimClient.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:CASimClient.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:Util.ColorSerializer">
+            <summary>
+            A class used to read and write a color scheme to and from an XML
+            configuration file.
+            </summary>
+        </member>
+        <member name="M:Util.ColorSerializer.Serialize(System.String,System.Int32[])">
+            <summary>
+            Serialize a color scheme, writing it to a configuration file in XML format
+            </summary>
+            <param name="filename">The name of the file to read from</param>
+            <param name="colorList">The color scheme to serialize</param>
+        </member>
+        <member name="M:Util.ColorSerializer.Deserialize(System.String)">
+            <summary>
+            Deserialize a color scheme, reading from a configuration file in XML format
+            </summary>
+            <param name="filename">The name of the file to read from</param>
+            <returns>A color scheme read from the file, if the file is valid.
+            Otherwise, null is returned.</returns>
+        </member>
+        <member name="M:Util.ColorSerializer.hexToInt(System.String)">
+            <summary>
+            Convert a string containing a hexadecimal value to an int
+            </summary>
+            <param name="hexStr">A string containing a hexadecimal value</param>
+            <returns>An integer with the equivalent value</returns>
+        </member>
+        <member name="M:Util.ColorSerializer.intToHex(System.Int32)">
+            <summary>
+            Convert an int to a hexadecimal string
+            </summary>
+            <param name="x">The integer to convert</param>
+            <returns>A string containing that equivalent hexadecimal value</returns>
+        </member>
+        <member name="T:CASimClient.GridBitmap">
+            <summary>
+            Class used to draw a cell grid using an optimized bitmap. After being
+            initialized, cells may be drawn on the bitmap using:
+            setPixel() for an individual cell
+            setPixels() for a LinkedList or array of cells
+            setGrid() for a full grid
+            </summary>
+        </member>
+        <member name="M:CASimClient.GridBitmap.#ctor(System.Int32,System.Int32,System.UInt32,System.Int32[])">
+            <summary>
+            Initialize a new GridBitmap with the given dimensions and color range.
+            </summary>
+            <param name="x">The width of the bitmap (in pixels)</param>
+            <param name="y">The height of the bitmap (in pixels)</param>
+            <param name="colors">An array containing RGB values indicating how states should be colored.
+            (e.g., a cell in state 2 will be colored with the RGB value in colors[2])
+            If a color for a given state is undefined, undefinedColor will be used.</param>
+        </member>
+        <member name="M:CASimClient.GridBitmap.refreshBMP">
+            <summary>
+            Refresh the bitmap and free previously allocated memory
+            </summary>
+        </member>
+        <member name="M:CASimClient.GridBitmap.setPixel(CASimService.Cell)">
+            <summary>
+            Set an individual pixel to a new color
+            </summary>
+            <param name="x">The Cell containing the coordinates and new state
+            </param>
+        </member>
+        <member name="M:CASimClient.GridBitmap.setPixels(System.Collections.Generic.LinkedList{CASimService.Cell})">
+            <summary>
+            Update portions of the bitmap given a LinkedList of cells to be updated
+            </summary>
+            <param name="toUpdate">A list of newly updated cells and their new states</param>
+        </member>
+        <member name="M:CASimClient.GridBitmap.setPixels(CASimService.Cell[])">
+            <summary>
+            Update portions of the bitmap given an array of cells to be updated
+            </summary>
+            <param name="toUpdate">A list of newly updated cells and their new states</param>
+        </member>
+        <member name="M:CASimClient.GridBitmap.setGrid(System.UInt32[][])">
+            <summary>
+            Set this bitmap to be the contents of the specified grid. The grid
+            must be the same size as the curernt bitmap.
+            </summary>
+            <param name="grid"></param>
+        </member>
+        <member name="T:Util.CASerializer">
+            <summary>
+            A class used to read and write a CA and its paramters to and from an XML
+            configuration file.
+            </summary>
+        </member>
+        <member name="M:Util.CASerializer.Serialize(System.String,CASimService.CA)">
+            <summary>
+            Serialize a CA, writing it to a configuration file in XML format
+            </summary>
+            <param name="filename">The name of the file to read from</param>
+            <param name="ca">The CA to serialize</param>
+        </member>
+        <member name="M:Util.CASerializer.Deserialize(System.String)">
+            <summary>
+            Deserialize a CA, reading from a configuration file in XML format
+            </summary>
+            <param name="filename">The name of the file to read from</param>
+            <returns>A CA representing the data read from the file, if the file
+            is valid. Otherwise, null is returned.</returns>
+        </member>
+        <member name="T:CASimClient.EditFramerateDialog">
+            <summary>
+            Interaction logic for EditFramerateDialog.xaml
+            </summary>
+            <summary>
+            EditFramerateDialog
+            </summary>
+        </member>
+        <member name="M:CASimClient.EditFramerateDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:Util.GridSerializer">
+            <summary>
+            A class used to read and write the complete state of a grid to and from
+            an XML configuration file.
+            </summary>
+        </member>
+        <member name="M:Util.GridSerializer.Serialize(System.String,System.UInt32[][])">
+            <summary>
+            Serialize a grid, writing it to a configuration file in XML format
+            </summary>
+            <param name="filename">The name of the file to write to</param>
+            <param name="grid">The grid to serialize</param>
+        </member>
+        <member name="M:Util.GridSerializer.Deserialize(System.String)">
+             <summary>
+             Deserialize a grid, reading from a configuration file in XML
+             format, and creating a 2-dimensional grid from it.
+            
+             The height of the grid will be the number of rows entered in the
+             XML file. The width of the grid will be the length of the longest
+             row in the XML file.
+            
+             Any values missing in the XML file (e.g., any rows containing
+             fewer elements than the longest row) will be assigned the default
+             state (0).
+             </summary>
+             <param name="filename">The name of the file to read from</param>
+             <returns>A grid representing the data read from the file, if the file
+             is valid. Otherwise, null is returned.</returns>
+        </member>
+        <member name="T:CASimClient.App">
+            <summary>
+            Interaction logic for App.xaml
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:CASimClient.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:CASimClient.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:Util.OPoint">
+            <summary>
+            A Point class for use in an ObservableCollection, which notifies
+            the event handler whenever a property is changed. Used in CALoaderWindow
+            to display a neighborhood set while it is being made.
+            </summary>
+        </member>
+        <member name="T:Util.NumBox">
+            <summary>
+            A TextBox that only accepts positive integer values as input.
+            </summary>
+        </member>
+        <member name="M:Util.NumBox.OnPreviewTextInput(System.Windows.Input.TextCompositionEventArgs)">
+            <summary>
+            Override OnPreviewTextInput to only accept integers
+            </summary>
+        </member>
+        <member name="T:CASimClient.CALoaderWindow">
+            <summary>
+            Window used for loading and compiling a CA.
+            </summary>
+            <summary>
+            CALoaderWindow
+            </summary>
+        </member>
+        <member name="M:CASimClient.CALoaderWindow.addPoint(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Add a new point to the neighborhood set, without duplicates
+            </summary>
+        </member>
+        <member name="M:CASimClient.CALoaderWindow.compile(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Attempt to compile delta function code entered. Any compiler
+            messages are displayed.
+            </summary>
+        </member>
+        <member name="M:CASimClient.CALoaderWindow.loadFromFile(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Open an open file dialog to let the user choose a CA configuration
+            file, and attempt to load a CA from it.
+            </summary>
+        </member>
+        <member name="M:CASimClient.CALoaderWindow.populateFields">
+            <summary>
+            Load the current CA's values back into the input fields
+            (used when loading a new CA or editing the current one)
+            </summary>
+        </member>
+        <member name="M:CASimClient.CALoaderWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:CASimClient.GridResizeDialog">
+            <summary>
+            Interaction logic for GridResizeDialog.xaml
+            </summary>
+            <summary>
+            GridResizeDialog
+            </summary>
+        </member>
+        <member name="M:CASimClient.GridResizeDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
+        </member>
+    </members>
+</doc>

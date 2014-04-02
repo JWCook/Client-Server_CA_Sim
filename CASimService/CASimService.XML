@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CASimService</name>
+    </assembly>
+    <members>
+        <member name="T:CASimService.Simulation">
+             <summary>
+             Functionality needed for setting up and simulating a cellular automaton.
+             The simulation, its grid, and its CA are initialized separately to
+             allow a grid to be displayed before any parameters are entered.
+            
+             When a new simulation is created, the grid is initialized to a default
+             size (500x500) with all cells in the default state (0). The grid may be
+             re-initialized, if needed.
+            
+             Before using a simulation, initCA() must be called to load CA parameters.
+             Before a CA is loaded, the grid is still accessible, but the simulation
+             cannot be run.
+            
+             If the loaded CA specifies a neighborhood set, the simulation will attempt
+             to optimize subsequent iterations by only checking cells within the
+             reverse neighborhood set of changed cells (e.g., the simulation checks
+             cells for which one or more cells in its neighborhood set has changed).
+            
+             If the loaded CA has a variable neighborhood set or does not specify a
+             a neighborhood set, the delta function must be applied to every cell in
+             the grid. (eww.)
+            
+             Once set up, the simulation is run by calls to step(), which simulates a  
+             single generation of the cellular automaton.                              
+             </summary>
+        </member>
+        <member name="M:CASimService.Simulation.#ctor">
+            <summary>
+            Initialize a new simulation with a blank grid (with all cells in
+            the default state) of the default size.
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.getAbsoluteCoords(CASimService.CPoint,CASimService.CPoint)">
+            <summary>
+            Given coordinates relative to a specified center point, return
+            the equivalent absolute coordinates on the grid.
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.getCellState(CASimService.CPoint)">
+            <summary>
+            Get the state of the specified cell
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.getNumNeighbors(CASimService.CPoint,System.Int32)">
+            <summary>
+            Get the number of states with the specified state that are
+            neighboring the specified cell. (To be used as a shortcut for CAs
+            in which only the number of neighboring cells of a given state is
+            relevant, and not their arrangement)
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.getUpdated">
+            <summary>
+            Get an array of updated cells representing a single completed frame
+            of the simulation, if available
+            </summary>
+            <returns>An array of updated cells, if available, or null otherwise
+            </returns>
+        </member>
+        <member name="M:CASimService.Simulation.initCA(CASimService.CA)">
+            <summary>
+            Load the specified CA into this simulation, and clear the grid if
+            necessary
+            </summary>
+            <param name="newCA">A CA representing a CA and its parameters</param>
+            <returns>True if the CA is valid, or false otherwise</returns>
+        </member>
+        <member name="M:CASimService.Simulation.initGridBlank(System.Int32,System.Int32)">
+            <summary>
+            Initialize a blank grid (with all cells in state 0) of the
+            specified size
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.initGrid(System.UInt32[][])">
+            <summary>
+            Initialize a grid from a the specified array
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.run(System.Boolean)">
+            <summary>
+            Start the simulation thread
+            </summary>
+            <param name="t">Indicates if the simulation should try to
+            only produce what the client can consume</param>
+        </member>
+        <member name="M:CASimService.Simulation.runSimulation">
+            <summary>
+            Used by runSimulationThread to run the simulation until stopped
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.setCellState(CASimService.CPoint,System.UInt32)">
+             <summary>
+             Set the specified cell to be in the specified state in the next
+             iteration; this adds the modification to a set of cells to modify
+             at the end of this iteration.
+            
+             If a neighborhood set has been specified and optimization is
+             possible, any cell modifications are caught and handled here.
+             Cells within the reverse neighborhood set of the changed cell are
+             added to the list of cells to check in the next iteration.
+             </summary>
+        </member>
+        <member name="M:CASimService.Simulation.step">
+            <summary>
+            Step through one iteration of the simulation. This involves:
+            -Applying the delta function to each cell that needs to be checked
+            -Updating the list of cells to be checked in the next iteration
+                 (this is handled by any calls to setCellState())
+            -Applying any changes to the grid at the end of the iteration.
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.stop">
+            <summary>
+            Signal simulation thread to stop
+            </summary>
+        </member>
+        <member name="M:CASimService.Simulation.updateGrid(System.Boolean)">
+            <summary>
+            Update the grid with any cells changed in this iteration, and add
+            to the list of cells updated (to be checked by the client), if
+            specified.
+            </summary>
+            <param name="addToUpdated">Specifies whether to add to the list
+            of updated cells. This should be false only when updateGrid() is
+            explicitly called by the client, and the client has already updated
+            the appropriate cells.</param>
+        </member>
+        <member name="M:CASimService.Simulation.wrap(System.Int32,System.Boolean)">
+            <summary>
+            Adjust an x or y value to be within the bounds of the grid, with
+            wraparound.
+            (e.g., if wrap() is called on both coordinates of the point
+            (502,-5) on a 500x500 grid, the point is wrapped to (2,495))
+            </summary>
+        </member>
+        <member name="T:CASimService.CA">
+            <summary>
+            A class representing a CA and its parameters. A CA is used by first
+            initializing it either from a file (using CASerializer) or from the
+            constructor.
+            
+            Before being used, the delta function for the CA must be compiled with
+            compileDelta() until there are no compiler errors and the delta function
+            has been compiled successfully.
+            
+            The CA may then be used by calling delta() on a cell. delta() also
+            requires a reference to the Simulation that calls it in order to access
+            the Simulation's grid.
+            
+            The delta function must be in the following format:
+               public void delta(Simulation sim, CPoint center) {
+                  //(code goes here)
+               }
+            Where sim is a reference to the current simulation, and center is the
+            cell to apply the delta function to.
+            
+            The simulation's grid is accessed via sim.GetCellState() and
+            sim.setCellState(). sim.getNumNeighbors() may also be used as a shortcut
+            for CAs in which only the number of neighboring cells of a given state is
+            relevant, and not their arrangement
+            </summary>
+        </member>
+        <member name="M:CASimService.CA.#ctor">
+            <summary>
+            Initialize a CA with default values (required for serialization)
+            </summary>
+        </member>
+        <member name="M:CASimService.CA.#ctor(System.Int32,System.UInt32,CASimService.CPoint[],System.String)">
+            <summary>
+            Initialize a CA with the specified values. compileDelta() must
+            be called successfully before the CA is usable.
+            </summary>
+            <param name="n">The number of states of this CA</param>
+            <param name="d">The default state of this CA. Must be between 0 and
+            n (will be adjusted otherwise).</param>
+            <param name="neighbors">An array of points representing the
+            neighborhood set of this CA, if applicable</param>
+            <param name="delta">A string representing the delta function to be compiled</param>
+        </member>
+        <member name="M:CASimService.CA.copyCA">
+            <summary>
+            Return an uncompiled copy of this CA. This is used when sending a
+            CA over a network, since a compiled assmebly cannot be serialized.
+            </summary>
+            <returns>An uncompiled copy of this CA</returns>
+        </member>
+        <member name="M:CASimService.CA.compileDelta">
+            <summary>
+            Compile this CA's delta function
+            </summary>
+        </member>
+        <member name="M:CASimService.CA.delta(CASimService.Simulation,CASimService.CPoint)">
+            <summary>
+            Call the compiled delta function, if available
+            </summary>
+            <param name="sim">The simulation for which the function is being called</param>
+            <param name="center">The center cell to call the function on</param>
+        </member>
+        <member name="M:CASimService.CA.reverseNeighborhood">
+            <summary>
+            Reverse the current neighborhood set, flipping it vertically and
+            horizontally about the center. This can be done by reversing the
+            order of the points as well as the sign on each coordinates.
+            </summary>
+        </member>
+        <member name="T:CASimService.CPoint">
+            <summary>
+            Structure representing a cell's coordinates on a grid
+            </summary>
+        </member>
+        <member name="T:CASimService.Cell">
+            <summary>
+            Structure representing a cell to be updated, including its
+            coordinates and new state.
+            </summary>
+        </member>
+        <member name="T:CASimService.PointComparer">
+            <summary>
+            Point comparer for use in the SortedSet containing the set of
+            points to be checked in the next iteration
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,123 @@
+﻿<Window x:Class="CASimClient.CAClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Util;assembly="
+        Title="CA Simulator" Height="670" Width="563" Name="caClientWindow" ResizeMode="CanMinimize" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Closed="exit">
+    <Grid Height="630" Name="outerGrid" Width="Auto" VerticalAlignment="Bottom" Margin="0" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75*" />
+            <RowDefinition Height="536*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="190*" />
+            <ColumnDefinition Width="411*" />
+        </Grid.ColumnDefinitions>
+        <Menu Height="20" Name="menubar" VerticalAlignment="Top" AllowDrop="True" Grid.ColumnSpan="2" Width="Auto" VerticalContentAlignment="Top" Margin="0,-14,0,0">
+            <MenuItem Header="_File" Name="fileMenuItem">
+                <MenuItem Header="_Run" Name="runMenuItem" Click="runStop" IsEnabled="False">
+                    <MenuItem.ToolTip> <ToolTip>Run the CA simulation</ToolTip> </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Step" Name="stepMenuItem" Click="step" IsEnabled="False">
+                    <MenuItem.ToolTip> <ToolTip>Run the CA simulation</ToolTip> </MenuItem.ToolTip>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="_Exit"  Click="exit">
+                    <MenuItem.ToolTip><ToolTip>Close the program</ToolTip></MenuItem.ToolTip>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_CA" Name="caMenuItem">
+                <MenuItem Header="_Load CA" Name="loadCAMenuItem" Click="loadCA" >
+                    <MenuItem.ToolTip> <ToolTip>Load a CA from a file or create a new one</ToolTip> </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Save CA" Name="saveCAMenuItem" IsEnabled="False" Click="saveCA">
+                    <MenuItem.ToolTip> <ToolTip>Save the current CA to a file</ToolTip> </MenuItem.ToolTip>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Grid" Name="gridMenuItem">
+                <MenuItem Header="_Clear Grid" Name="clearMenuItem" Click="clear">
+                    <MenuItem.ToolTip>  <ToolTip>Clear the current grid</ToolTip> </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Resize Grid" Name="resizeMenuItem" Click="resize">
+                    <MenuItem.ToolTip> <ToolTip>Create a new grid of a different size</ToolTip> </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Load Grid"  Name="loadGridMenuItem" Click="loadGrid">
+                    <MenuItem.ToolTip>
+                        <ToolTip>Load a grid from a file</ToolTip>
+                    </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Save Grid" Name="saveGridMenuItem" Click="saveGrid">
+                    <MenuItem.ToolTip>
+                        <ToolTip>Save the current grid contents to a file</ToolTip>
+                    </MenuItem.ToolTip>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_View" Name="ViewMenuItem">
+                <MenuItem Header="_Framerate Options" Name="framerateOptionsMenuItem" Click="editFrameRate">
+                    <MenuItem.ToolTip>
+                        <ToolTip>Adjust the framerate of the simulation, and enable or disable frame skipping</ToolTip>
+                    </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Generate Color Scheme" Name="genColorMenuItem" Click="reGenerateColors">
+                    <MenuItem.ToolTip>
+                        <ToolTip>Re-generate a color scheme large enough for the currently loaded CA</ToolTip>
+                    </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Load Color Scheme" Name="loadColorMenuItem" Click="loadColors">
+                    <MenuItem.ToolTip> <ToolTip>Load a color scheme from a file</ToolTip> </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Save Color Scheme" Name="saveColorMenuItem" Click="saveColors">
+                    <MenuItem.ToolTip> <ToolTip>Save the current color scheme to a file</ToolTip> </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Header="_Zoom +" Click="zoomLarger"/>
+                <MenuItem Header="_Zoom -" Click="zoomSmaller"/>
+            </MenuItem>
+        </Menu>
+        <GroupBox Grid.Column="1" Header="Zoom" HorizontalAlignment="Left" Margin="63,0,0,12" Name="zoomGroup" Width="302" VerticalAlignment="Bottom" Height="60" VerticalContentAlignment="Center">
+            <Grid>
+                <Slider Name="zoomSlider" Value="1" Minimum="1" Maximum="20" SmallChange="1" LargeChange="2" Width="200" Orientation="Horizontal" TickPlacement="TopLeft" BorderThickness="2" IsSnapToTickEnabled="False" TickFrequency="1" Margin="0" VerticalAlignment="Center" Height="29" />
+                <Button Content="+" Height="25"   Name="zoomLargerButton" VerticalAlignment="Center" Width="25" FontSize="14" FontWeight="Normal" Click="zoomLarger" HorizontalAlignment="Right" Margin="0,0,6,0" />
+                <Button Content="-" FontSize="14" FontWeight="Normal" Height="25" Name="zoomButtonSmaller" VerticalAlignment="Center" Width="25" Click="zoomSmaller" HorizontalAlignment="Left" Margin="6,0,0,0" />
+            </Grid>
+        </GroupBox>
+        
+        <GroupBox Header="Simulation" Height="60" HorizontalAlignment="Left" Name="controlGroup" VerticalAlignment="Bottom" Width="186" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="6,0,0,12" Grid.ColumnSpan="2">
+            <Grid>
+                <Button Content="Run" Height="25" HorizontalAlignment="Left" Margin="6,0,0,0" Name="runButton" VerticalAlignment="Center" Width="50" Click="runStop" IsEnabled="False" />
+                <Button Content="Step" Height="25" HorizontalAlignment="Left" Margin="62,0,0,0" Name="stepButton" VerticalAlignment="Center" Width="50" Click="step" IsEnabled="False" />
+                <Button Content="Clear" Height="25" HorizontalAlignment="Left" Margin="118,0,0,0" Name="clearButton" VerticalAlignment="Center" Width="50" Click="clear" />
+            </Grid>
+        </GroupBox>
+        <StatusBar Grid.Row="1" Height="23" HorizontalAlignment="Stretch" Name="statusBar1" VerticalAlignment="Bottom" Grid.ColumnSpan="2" VerticalContentAlignment="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="generationTextBlock" Width="145">Generation: 0</TextBlock>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock Name="coordinatesTextBlock" Width="145">Coordinates: (0,0)</TextBlock>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock Name="statusTextBlock" Width="233">A CA must be loaded before running simulation</TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+        <GroupBox Height="540" Margin="6,65,0,0" Name="gridGroupBox" Header="Cell Grid" Width="530" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.RowSpan="2">
+        <ScrollViewer HorizontalAlignment="Stretch" Name="gridScroller" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Visible" BorderThickness="2" BorderBrush="#FF8D8D8D" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="Auto" Width="Auto" Grid.ColumnSpan="2" Margin="0" Grid.Row="1">
+            <Image Height="500" Width="500" Name="gridImage" Stretch="Uniform" SnapsToDevicePixels="True" MouseLeftButtonUp="clickCell" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True" MouseMove="updateCoords" MouseRightButtonUp="clickCell">
+                <Image.LayoutTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1" ScaleY="1" />
+                        <ScaleTransform>
+                            <ScaleTransform.ScaleX>
+                                <Binding ElementName="zoomSlider" Path="Value" Mode="OneWay" />
+                            </ScaleTransform.ScaleX>
+                            <ScaleTransform.ScaleY>
+                                <Binding ElementName="zoomSlider" Path="Value" Mode="OneWay" />
+                            </ScaleTransform.ScaleY>
+                        </ScaleTransform>
+                    </TransformGroup>
+                </Image.LayoutTransform>
+            </Image>
+        </ScrollViewer>
+        </GroupBox>
+    </Grid>
+</Window>

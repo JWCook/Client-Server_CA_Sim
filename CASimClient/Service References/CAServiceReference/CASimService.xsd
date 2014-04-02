@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/CASimService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/CASimService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/System.Reflection" />
+  <xs:complexType name="CPoint">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="X" type="xs:int" />
+      <xs:element minOccurs="0" name="Y" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CPoint" nillable="true" type="tns:CPoint" />
+  <xs:complexType name="ArrayOfCell">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Cell" type="tns:Cell" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCell" nillable="true" type="tns:ArrayOfCell" />
+  <xs:complexType name="Cell">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="X" type="xs:int" />
+      <xs:element minOccurs="0" name="Y" type="xs:int" />
+      <xs:element minOccurs="0" name="state" type="xs:unsignedInt" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Cell" nillable="true" type="tns:Cell" />
+  <xs:complexType name="CA">
+    <xs:sequence>
+      <xs:element name="defaultState" type="xs:unsignedInt" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Reflection" name="deltaFunction" nillable="true" type="q1:MethodInfo" />
+      <xs:element name="deltaStr" nillable="true" type="xs:string" />
+      <xs:element name="deltaWrapper" nillable="true" type="xs:anyType" />
+      <xs:element name="neighborhood" nillable="true" type="tns:ArrayOfCPoint" />
+      <xs:element name="numStates" type="xs:int" />
+      <xs:element name="rNeighborhood" nillable="true" type="tns:ArrayOfCPoint" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CA" nillable="true" type="tns:CA" />
+  <xs:complexType name="ArrayOfCPoint">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CPoint" type="tns:CPoint" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCPoint" nillable="true" type="tns:ArrayOfCPoint" />
+</xs:schema>
