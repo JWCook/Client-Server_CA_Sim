@@ -4,29 +4,23 @@
 
 This is a cellular automata simulator written in C#, for the purposes of simulating and visualizing arbitrary CAs using dynamically compiled code. Written as part of an undergrad project.
 
-
 --------------------------------------------------------------------------------
 1. Program Features
 --------------------------------------------------------------------------------
 
-The client program has the following functionality:
-
-- Run a simulation of a CA either continuously or one generation at a time  
-- Save, load, and dynamically compile a CA using user-specified C# code (samples provided) 
-- Edit the contents of the cell grid
-- Save, load, clear, and resize the cell grid (samples provided)
-- Scroll, zoom in, and zoom out to view the grid contents
-- Adjust the speed of the simulation and display
-- Save, load, or generate colors to use for the states of a CA (samples provided)
-- Computation and drawing operations are optimized and multi-threaded for fast performance.
-- Computation is offloaded to a WCF service that can be run on a separate server
-
+- Computation is multi-threaded, optimized, and offloaded to a WCF service that can be run on a separate server
+- Dynamically compile delta functions using user-specified C# code
+- Import/export delta functions (samples provided)
+- Import/export cell grids (samples provided)
+- Import/export CA state color schemes (samples provided)
+- Editable/scrollable/zoomable cell grid
+- Adjustable simulation speed
 
 --------------------------------------------------------------------------------
 2. Server
 --------------------------------------------------------------------------------
 
-Computation for the CA simulation is handled by a separate service hosted by CAServer.exe. By default, this is configured to run on localhost, TCP port 3333. CAServer.exe must be running for the client to function.
+Computation for the CA simulation is handled by a separate service (CAService) hosted by CAServer. By default, this is configured to run on localhost, TCP port 3333 (TODO: config/properties files). CAServer.exe must be run first in order for the client to function.
 
 --------------------------------------------------------------------------------
 3. Display
@@ -51,7 +45,7 @@ This is the code used to compute the delta function for an individual cell. It m
 	```public void delta(Simulation sim, CPoint center) {  
 		// User code goes here  
 	}```  
-Where sim is a reference to the current simulation, and center is the cell to apply the delta function to. Cell is a simple struct containing members X : int Y : int, and state : uint. The simulation's grid is accessed via sim.GetCellState() and sim.setCellState(). sim.getNumNeighbors(center : Cell, state : int) may also be used as a shortcut to find the number of nearby neighbors of a given state. This is useful for CAs in which only the number of neighboring cells of a given state is relevant, and not their arrangement.
+Where sim is a reference to the current simulation, and center is the cell to apply the delta function to. Cell is a simple struct containing members X : int Y : int, and state : uint. The simulation's grid is accessed via sim.GetCellState() and sim.setCellState(). sim.getNumNeighbors(center : Cell, state : int) may also be used as a shortcut to find the number of nearby neighbors of a given state. This is useful for CAs in which only the number of neighboring cells of a given state is relevant, and not their arrangement. See Samples directory for delta function examples.
 
 **Number of states (required):**  
 The number of possible states in this CA. it must match the code specified for the delta function.
