@@ -42,9 +42,13 @@ Before a simulation can be run, a cellular automata must be defined. To do this,
 
 **Delta function code (required):**  
 This is the code used to compute the delta function for an individual cell. It must be valid C# code, and all code entered must be within the function declaration provided:  
-	```public void delta(Simulation sim, CPoint center) {  
+
+```C#
+	public void delta(Simulation sim, CPoint center) {  
 		// User code goes here  
-	}```  
+	}
+```
+
 Where sim is a reference to the current simulation, and center is the cell to apply the delta function to. Cell is a simple struct containing members X : int Y : int, and state : uint. The simulation's grid is accessed via sim.GetCellState() and sim.setCellState(). sim.getNumNeighbors(center : Cell, state : int) may also be used as a shortcut to find the number of nearby neighbors of a given state. This is useful for CAs in which only the number of neighboring cells of a given state is relevant, and not their arrangement. See Samples directory for delta function examples.
 
 **Number of states (required):**  
@@ -86,11 +90,15 @@ A color scheme is automatically generated to display different colors for differ
 The current color scheme can be saved to a file by selecting Save Color Scheme from the View menu.
 
 A user-specified color scheme can be loaded by selecting Load Color Scheme from the View menu. This must be an XML file in the following format:
-```<?xml version="1.0" encoding="utf-16"?>  
-<ArrayOfString>  
-<string>...</string>  
+
+```XML
+<?xml version="1.0" encoding="utf-16"?>
+<ArrayOfString>
+<string>...</string>
 ...  
-</ArrayOfString>```  
+</ArrayOfString>
+```
+
 With each color specified by a 6-digit hexadecimal RGB value enclosed by <string> tags. The first entry will be used for state 0, the second entry will be used for state 1, and so on.
 
 The file loaded must have at least as many colors as the number of states of the currently loaded CA. If a CA is later loaded that has more states than a user-specified color scheme can support, the program will generate a new color scheme.
