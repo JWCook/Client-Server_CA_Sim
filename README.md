@@ -35,7 +35,7 @@ The client program interface consists of the following:
 - Menu items containing additional functionality discussed below
 
 --------------------------------------------------------------------------------
-4. Client: Loading, Saving, Creating, and Compiling a CA
+4. Loading, Saving, Creating, and Compiling a CA
 --------------------------------------------------------------------------------
 
 Before a simulation can be run, a cellular automata must be defined. To do this, click on Load/Edit CA from the CA menu. From here, the following information can be entered:
