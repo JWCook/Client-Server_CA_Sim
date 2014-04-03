@@ -49,7 +49,7 @@ public void delta(Simulation sim, CPoint center) {
 }
 ```
 
-Where **sim** is a reference to the current simulation, and **center** is the cell to apply the delta function to. The simulation's grid is accessed via **sim.GetCellState()** and **sim.setCellState()**. **sim.getNumNeighbors()** may also be used as a shortcut to find the number of nearby neighbors of a given state. This is useful for CAs in which only the number of neighboring cells of a given state is relevant, and not their arrangement. See Samples directory for delta function examples.
+Where _sim_ is a reference to the current simulation, and _center_ is the cell to apply the delta function to. The simulation's grid is accessed via _sim.GetCellState()_ and _sim.setCellState()_. _sim.getNumNeighbors()_ may also be used as a shortcut to find the number of nearby neighbors of a given state. This is useful for CAs in which only the number of neighboring cells of a given state is relevant, and not their arrangement. See Samples directory for delta function examples.
 
 **Number of states (required):**  
 The number of possible states in this CA. it must match the code specified for the delta function.
